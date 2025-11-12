@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel Advanced Functions Guide - Norlen's Reference</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            width: 100%;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+        
+        .header-content {
+            flex: 1;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.25rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .progress-container {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+        
+        .progress-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: conic-gradient(#28a745 0deg, #28a745 0deg, rgba(255,255,255,0.3) 0deg, rgba(255,255,255,0.3) 360deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .progress-circle::before {
+            content: '';
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+        }
+        
+        .progress-text {
+            position: relative;
+            z-index: 1;
+            font-size: 0.8rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        /* Subtle 100% completion animation */
+        .progress-complete {
+            animation: subtleComplete 2s ease-in-out;
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.6);
+        }
+        
+        @keyframes subtleComplete {
+            0% { 
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+            }
+            25% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(40, 167, 69, 0.4);
+            }
+            50% { 
+                transform: scale(1.1);
+                box-shadow: 0 0 0 20px rgba(40, 167, 69, 0.1);
+            }
+            75% { 
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(40, 167, 69, 0.4);
+            }
+            100% { 
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(40, 167, 69, 0.6);
+            }
+        }
+        
+        .progress-complete .progress-text {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-right: 1px solid #e9ecef;
+            position: fixed;
+            left: 0;
+            top: 80px;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            padding: 2rem 1.5rem 1.5rem 1.5rem;
+            z-index: 50;
+            scroll-behavior: smooth;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        .content {
+            flex: 1;
+            margin-left: 300px;
+            padding: 2rem;
+            /* Removed overflow-y: auto and height restrictions to fix dual scrollbar */
+        }
+        
+        .toc {
+            list-style: none;
+        }
+        
+        .toc li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .toc a {
+            text-decoration: none;
+            color: #495057;
+            padding: 0.5rem 0.75rem;
+            border-radius: 5px;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .toc a:hover {
+            background: #007bff;
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .toc a.active {
+            background: #007bff;
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+        }
+        
+        .toc .subsection {
+            margin-left: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem 0;
+        }
+        
+        .section h4 {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin: 1rem 0 0.5rem 0;
+        }
+        
+        ul, ol {
+            margin: 1rem 0 1rem 2rem;
+            padding-left: 1rem;
+        }
+        
+        ul li, ol li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .example h4 {
+            color: #28a745;
+            margin-bottom: 1rem;
+        }
+        
+        .formula {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            position: relative;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: background 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: #3182ce;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 1rem;
+            border-left: 4px solid #ffc107;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .tip {
+            background: #d1ecf1;
+            padding: 1rem;
+            border-left: 4px solid #17a2b8;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .warning {
+            background: #f8d7da;
+            padding: 1rem;
+            border-left: 4px solid #dc3545;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        
+        .complexity-indicator {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        
+        .beginner {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .intermediate {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .advanced {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .expert {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,123,255,0.4);
+        }
+        
+        .back-to-top:active {
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                min-height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+            
+            .content {
+                margin-left: 0;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .progress-container {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .progress-circle {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .progress-circle::before {
+                width: 38px;
+                height: 38px;
+            }
+            
+            .progress-text {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>📊 Excel Advanced Functions Guide</h1>
+                <p class="subtitle">Master Excel's Most Powerful Functions - Norlen's Complete Reference</p>
+            </div>
+            <div class="progress-container">
+                <div class="progress-circle" id="progressCircle">
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <nav class="sidebar" id="sidebar">
+                <h3>📋 Table of Contents</h3>
+                <ul class="toc">
+                    <li><a href="#introduction">🎯 Introduction</a></li>
+                    <li><a href="#index">🔍 INDEX Function</a>
+                        <ul class="toc subsection">
+                            <li><a href="#index-basics">Basics</a></li>
+                            <li><a href="#index-advanced">Advanced Usage</a></li>
+                            <li><a href="#index-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#match">🎯 MATCH Function</a>
+                        <ul class="toc subsection">
+                            <li><a href="#match-basics">Basics</a></li>
+                            <li><a href="#match-types">Match Types</a></li>
+                            <li><a href="#match-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#lookup">🔎 LOOKUP Functions</a>
+                        <ul class="toc subsection">
+                            <li><a href="#vlookup">VLOOKUP</a></li>
+                            <li><a href="#xlookup">XLOOKUP</a></li>
+                            <li><a href="#lookup-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#choose">🎲 CHOOSE Function</a>
+                        <ul class="toc subsection">
+                            <li><a href="#choose-basics">Basics</a></li>
+                            <li><a href="#choose-advanced">Advanced Usage</a></li>
+                            <li><a href="#choose-examples">Complex Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#filter">🎛️ FILTER Function</a>
+                        <ul class="toc subsection">
+                            <li><a href="#filter-basics">Basics</a></li>
+                            <li><a href="#filter-conditions">Conditions</a></li>
+                            <li><a href="#filter-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#stacking">📚 VSTACK & HSTACK</a>
+                        <ul class="toc subsection">
+                            <li><a href="#vstack">VSTACK</a></li>
+                            <li><a href="#hstack">HSTACK</a></li>
+                            <li><a href="#stacking-examples">Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#let">🚀 LET Function</a>
+                        <ul class="toc subsection">
+                            <li><a href="#let-basics">Basics</a></li>
+                            <li><a href="#let-variables">Variables</a></li>
+                            <li><a href="#let-advanced">Advanced Patterns</a></li>
+                            <li><a href="#let-examples">Complex Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#lambda">⚡ LAMBDA Function</a>
+                        <ul class="toc subsection">
+                            <li><a href="#lambda-basics">Basics</a></li>
+                            <li><a href="#lambda-parameters">Parameters</a></li>
+                            <li><a href="#lambda-advanced">Advanced Usage</a></li>
+                            <li><a href="#lambda-examples">Complex Examples</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#combinations">🔗 Function Combinations</a>
+                        <ul class="toc subsection">
+                            <li><a href="#combo-simple">Simple Combinations</a></li>
+                            <li><a href="#combo-intermediate">Intermediate</a></li>
+                            <li><a href="#combo-advanced">Advanced</a></li>
+                            <li><a href="#combo-choose-filter">CHOOSE + FILTER</a></li>
+                            <li><a href="#combo-lambda">LAMBDA Combinations</a></li>
+                            <li><a href="#combo-expert">Expert Level</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            
+            <main class="content">
+                <section id="introduction" class="section">
+                    <h2>🎯 Introduction</h2>
+                    <p>Welcome to the comprehensive guide for Excel's most powerful functions! This guide is designed for automation specialists who want to master Excel's advanced capabilities.</p>
+                    
+                    <div class="highlight">
+                        <h4>💡 Learning Path</h4>
+                        <p>This guide follows a progressive structure:</p>
+                        <ul>
+                            <li><strong>INDEX</strong> - Foundation for array navigation</li>
+                            <li><strong>MATCH</strong> - Perfect partner for INDEX</li>
+                            <li><strong>LOOKUP</strong> - Simplified lookup functions</li>
+                            <li><strong>CHOOSE</strong> - Value selection based on position</li>
+                            <li><strong>FILTER</strong> - Modern dynamic array filtering</li>
+                            <li><strong>VSTACK/HSTACK</strong> - Array manipulation</li>
+                            <li><strong>LET</strong> - Advanced variable management</li>
+                            <li><strong>LAMBDA</strong> - Custom function creation</li>
+                            <li><strong>Combinations</strong> - Real-world complex scenarios</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="index" class="section">
+                    <h2>🔍 INDEX Function</h2>
+                    <div class="complexity-indicator beginner">Beginner</div>
+                    
+                    <p>The INDEX function returns a value from a table or array based on row and column numbers. It's the foundation for many advanced Excel formulas.</p>
+                    
+                    <h3 id="index-basics">Basic Syntax</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        INDEX(array, row_num, [column_num])
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>array</td>
+                                    <td>The range or array from which to return a value</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>row_num</td>
+                                    <td>The row number in the array (1-based)</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>column_num</td>
+                                    <td>The column number in the array (1-based)</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Basic INDEX Usage</h4>
+                        <p>Let's say we have a sales table (A1:C4):</p>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Product</th>
+                                        <th>Sales</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>John</td>
+                                        <td>Laptop</td>
+                                        <td>$1,200</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Sarah</td>
+                                        <td>Phone</td>
+                                        <td>$800</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mike</td>
+                                        <td>Tablet</td>
+                                        <td>$600</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(A1:C4, 2, 3)
+                        </div>
+                        <p><strong>Result:</strong> $800 (Sarah's sales amount)</p>
+                        <p><strong>Explanation:</strong> Returns the value in row 2, column 3 of the range A1:C4</p>
+                    </div>
+                    
+                    <h3 id="index-advanced">Advanced INDEX Usage</h3>
+                    <div class="complexity-indicator intermediate">Intermediate</div>
+                    
+                    <div class="example">
+                        <h4>Example 2: INDEX with Single Column</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(A:A, 5)
+                        </div>
+                        <p><strong>Result:</strong> Returns the value in row 5 of column A</p>
+                        <p><strong>Explanation:</strong> When working with a single column, you only need the row number</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 3: INDEX with Entire Row</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(A1:E1, 3)
+                        </div>
+                        <p><strong>Result:</strong> Returns the value in column 3 of row 1</p>
+                        <p><strong>Explanation:</strong> When working with a single row, you only need the column number</p>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 Pro Tip</h4>
+                        <p>INDEX is more efficient than VLOOKUP for large datasets because it doesn't search through columns—it directly accesses the cell position.</p>
+                    </div>
+                    
+                    <h3 id="index-examples">Complex INDEX Examples</h3>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <div class="example">
+                        <h4>Example 4: Dynamic INDEX with ROWS and COLUMNS</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(A1:C10, ROWS(A1:A5), COLUMNS(A1:B1))
+                        </div>
+                        <p><strong>Result:</strong> Returns the value in row 5, column 2 of the range A1:C10</p>
+                        <p><strong>Explanation:</strong> ROWS(A1:A5) returns 5, COLUMNS(A1:B1) returns 2</p>
+                    </div>
+                </section>
+
+                <section id="match" class="section">
+                    <h2>🎯 MATCH Function</h2>
+                    <div class="complexity-indicator beginner">Beginner</div>
+                    
+                    <p>The MATCH function returns the position of a value in a range or array. It's the perfect companion to INDEX for creating dynamic lookups.</p>
+                    
+                    <h3 id="match-basics">Basic Syntax</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        MATCH(lookup_value, lookup_array, [match_type])
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>lookup_value</td>
+                                    <td>The value to search for</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>lookup_array</td>
+                                    <td>The range or array to search in</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>match_type</td>
+                                    <td>The type of match (0, 1, or -1)</td>
+                                    <td>No (default: 1)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <h3 id="match-types">Match Types</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Match Type</th>
+                                    <th>Description</th>
+                                    <th>Data Requirements</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>0</td>
+                                    <td>Exact match</td>
+                                    <td>Any order</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Less than or equal to (largest value ≤ lookup_value)</td>
+                                    <td>Ascending order</td>
+                                </tr>
+                                <tr>
+                                    <td>-1</td>
+                                    <td>Greater than or equal to (smallest value ≥ lookup_value)</td>
+                                    <td>Descending order</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Exact Match</h4>
+                        <p>Finding the position of "Sarah" in a list:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =MATCH("Sarah", A1:A10, 0)
+                        </div>
+                        <p><strong>Result:</strong> Returns the row number where "Sarah" appears</p>
+                        <p><strong>Explanation:</strong> The 0 ensures exact match, regardless of data order</p>
+                    </div>
+                    
+                    <h3 id="match-examples">Advanced MATCH Examples</h3>
+                    <div class="complexity-indicator intermediate">Intermediate</div>
+                    
+                    <div class="example">
+                        <h4>Example 2: MATCH with Wildcards</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =MATCH("John*", A1:A10, 0)
+                        </div>
+                        <p><strong>Result:</strong> Finds the first name starting with "John"</p>
+                        <p><strong>Explanation:</strong> The asterisk (*) matches any characters after "John"</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 3: Approximate Match for Grades</h4>
+                        <p>Grade boundaries: 90, 80, 70, 60 (in A1:A4)</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =MATCH(85, A1:A4, 1)
+                        </div>
+                        <p><strong>Result:</strong> 2 (position of 80, the largest value ≤ 85)</p>
+                        <p><strong>Explanation:</strong> Perfect for grade calculations or tax brackets</p>
+                    </div>
+                    
+                    <div class="warning">
+                        <h4>⚠️ Important</h4>
+                        <p>Always use match_type 0 for exact matches unless you specifically need approximate matching with sorted data.</p>
+                    </div>
+                </section>
+
+                <section id="lookup" class="section">
+                    <h2>🔎 LOOKUP Functions</h2>
+                    <div class="complexity-indicator beginner">Beginner</div>
+                    
+                    <p>LOOKUP functions are designed to find values in tables. We'll cover both traditional VLOOKUP and the modern XLOOKUP.</p>
+                    
+                    <h3 id="vlookup">VLOOKUP</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Basic VLOOKUP</h4>
+                        <p>Employee table (A1:D5):</p>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Department</th>
+                                        <th>Salary</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>101</td>
+                                        <td>John</td>
+                                        <td>IT</td>
+                                        <td>$75,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>102</td>
+                                        <td>Sarah</td>
+                                        <td>HR</td>
+                                        <td>$68,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td>103</td>
+                                        <td>Mike</td>
+                                        <td>Finance</td>
+                                        <td>$72,000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =VLOOKUP(102, A1:D5, 2, FALSE)
+                        </div>
+                        <p><strong>Result:</strong> "Sarah"</p>
+                        <p><strong>Explanation:</strong> Looks up ID 102 and returns the name from column 2</p>
+                    </div>
+                    
+                    <h3 id="xlookup">XLOOKUP (Modern Alternative)</h3>
+                    <div class="complexity-indicator intermediate">Intermediate</div>
+                    
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        XLOOKUP(lookup_value, lookup_array, return_array, [if_not_found], [match_mode], [search_mode])
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: XLOOKUP with Error Handling</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =XLOOKUP(105, A:A, B:B, "Employee Not Found")
+                        </div>
+                        <p><strong>Result:</strong> "Employee Not Found" (if ID 105 doesn't exist)</p>
+                        <p><strong>Explanation:</strong> XLOOKUP allows custom error messages without IFERROR</p>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 XLOOKUP Advantages</h4>
+                        <ul>
+                            <li>Can look left or right (not just right like VLOOKUP)</li>
+                            <li>Built-in error handling</li>
+                            <li>Can return multiple columns</li>
+                            <li>More flexible match modes</li>
+                        </ul>
+                    </div>
+                    
+                    <h3 id="lookup-examples">Advanced LOOKUP Examples</h3>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <div class="example">
+                        <h4>Example 3: INDEX-MATCH vs VLOOKUP</h4>
+                        <p>INDEX-MATCH equivalent of VLOOKUP:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(B:B, MATCH(102, A:A, 0))
+                        </div>
+                        <p><strong>Advantages of INDEX-MATCH:</strong></p>
+                        <ul>
+                            <li>Can look to the left of the lookup column</li>
+                            <li>Faster performance on large datasets</li>
+                            <li>More flexible column referencing</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="choose" class="section">
+                    <h2>🎲 CHOOSE Function</h2>
+                    <div class="complexity-indicator beginner">Beginner</div>
+                    
+                    <p>The CHOOSE function returns a value from a list of values based on a position number. It's like having a custom array where you can pick the nth item. CHOOSE is particularly powerful for creating dynamic formulas and decision trees.</p>
+                    
+                    <h3 id="choose-basics">Basic Syntax</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        CHOOSE(index_num, value1, [value2], [value3], ...)
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>index_num</td>
+                                    <td>The position number (1-based) of the value to return</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>value1, value2, ...</td>
+                                    <td>The values to choose from (up to 254 values)</td>
+                                    <td>Yes (at least value1)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Basic CHOOSE Usage</h4>
+                        <p>Select a day of the week based on a number:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =CHOOSE(3, "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+                        </div>
+                        <p><strong>Result:</strong> "Wednesday"</p>
+                        <p><strong>Explanation:</strong> CHOOSE returns the 3rd value from the list</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: CHOOSE with Cell References</h4>
+                        <p>Dynamic selection based on cell A1:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =CHOOSE(A1, "Excellent", "Good", "Average", "Poor")
+                        </div>
+                        <p><strong>Result:</strong> Returns different text based on the number in A1 (1-4)</p>
+                        <p><strong>Explanation:</strong> If A1 contains 2, the result will be "Good"</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 3: CHOOSE with Calculations</h4>
+                        <p>Different commission rates based on sales level:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =B2 * CHOOSE(A2, 0.05, 0.08, 0.12, 0.15)
+                        </div>
+                        <p><strong>Result:</strong> Calculates commission where A2 determines the rate level and B2 is the sales amount</p>
+                        <p><strong>Explanation:</strong> Level 1 = 5%, Level 2 = 8%, Level 3 = 12%, Level 4 = 15%</p>
+                    </div>
+                    
+                    <h3 id="choose-advanced">Advanced CHOOSE Usage</h3>
+                    <div class="complexity-indicator intermediate">Intermediate</div>
+                    
+                    <div class="example">
+                        <h4>Example 4: CHOOSE with Array Formulas</h4>
+                        <p>Select different ranges based on criteria:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =SUM(CHOOSE(A1, B1:B10, C1:C10, D1:D10))
+                        </div>
+                        <p><strong>Result:</strong> Sums different columns based on A1 value</p>
+                        <p><strong>Explanation:</strong> A1=1 sums B1:B10, A1=2 sums C1:C10, A1=3 sums D1:D10</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 5: CHOOSE for Dynamic Column Selection</h4>
+                        <p>Create a flexible lookup that can search different columns:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(CHOOSE(A1, B:B, C:C, D:D), MATCH(E1, A:A, 0))
+                        </div>
+                        <p><strong>Result:</strong> Looks up E1 in column A and returns corresponding value from column B, C, or D based on A1</p>
+                        <p><strong>Explanation:</strong> A1 determines which column to return data from</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 6: CHOOSE with Date Calculations</h4>
+                        <p>Calculate different date periods:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =TODAY() + CHOOSE(A1, 7, 14, 30, 90, 365)
+                        </div>
+                        <p><strong>Result:</strong> Adds different days to today's date</p>
+                        <p><strong>Explanation:</strong> A1=1 adds 1 week, A1=2 adds 2 weeks, A1=3 adds 1 month, etc.</p>
+                    </div>
+                    
+                    <h3 id="choose-examples">Complex CHOOSE Examples</h3>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <div class="example">
+                        <h4>Example 7: CHOOSE with Nested Functions</h4>
+                        <p>Dynamic statistical analysis:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =CHOOSE(A1, 
+                                AVERAGE(B:B), 
+                                MEDIAN(B:B), 
+                                MODE(B:B), 
+                                STDEV(B:B), 
+                                MAX(B:B), 
+                                MIN(B:B))
+                        </div>
+                        <p><strong>Result:</strong> Returns different statistical measures based on A1</p>
+                        <p><strong>Explanation:</strong> 1=Average, 2=Median, 3=Mode, 4=Standard Deviation, 5=Maximum, 6=Minimum</p>
+                    </div>
+                    
+                    <div class="warning">
+                        <h4>⚠️ CHOOSE Limitations</h4>
+                        <ul>
+                            <li>Index number must be between 1 and 254</li>
+                            <li>If index_num is less than 1 or greater than the number of values, returns #VALUE! error</li>
+                            <li>All values are evaluated, even if not selected (can impact performance)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 CHOOSE Best Practices</h4>
+                        <ul>
+                            <li>Use CHOOSE when you have a limited set of known options</li>
+                            <li>Consider using VLOOKUP or INDEX-MATCH for larger datasets</li>
+                            <li>CHOOSE is excellent for creating user-friendly dashboards</li>
+                            <li>Combine with data validation to create dropdown-driven selections</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="filter" class="section">
+                    <h2>🎛️ FILTER Function</h2>
+                    <div class="complexity-indicator intermediate">Intermediate</div>
+                    
+                    <p>The FILTER function returns an array of values that meet specified criteria. It's part of Excel's dynamic array functions and revolutionizes data filtering.</p>
+                    
+                    <h3 id="filter-basics">Basic Syntax</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        FILTER(array, include, [if_empty])
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>array</td>
+                                    <td>The array or range to filter</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>include</td>
+                                    <td>Boolean array indicating which rows to include</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>if_empty</td>
+                                    <td>Value to return if no items meet criteria</td>
+                                    <td>No</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Basic FILTER</h4>
+                        <p>Sales data (A1:C10) - filter for sales > $500:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =FILTER(A1:C10, C1:C10>500)
+                        </div>
+                        <p><strong>Result:</strong> Returns all rows where column C (sales) > 500</p>
+                        <p><strong>Explanation:</strong> The condition C1:C10>500 creates a boolean array, FILTER returns matching rows</p>
+                    </div>
+                    
+                    <h3 id="filter-conditions">Complex Filter Conditions</h3>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <div class="example">
+                        <h4>Example 2: Multiple Criteria (AND)</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =FILTER(A1:C10, (B1:B10="IT") * (C1:C10>50000))
+                        </div>
+                        <p><strong>Result:</strong> Returns rows where Department = "IT" AND Salary > 50000</p>
+                        <p><strong>Explanation:</strong> The multiplication (*) creates an AND condition</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 3: Multiple Criteria (OR)</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =FILTER(A1:C10, (B1:B10="IT") + (B1:B10="HR"))
+                        </div>
+                        <p><strong>Result:</strong> Returns rows where Department = "IT" OR Department = "HR"</p>
+                        <p><strong>Explanation:</strong> The addition (+) creates an OR condition</p>
+                    </div>
+                    
+                    <h3 id="filter-examples">Advanced FILTER Examples</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <div class="example">
+                        <h4>Example 4: FILTER with Text Search</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =FILTER(A1:C10, ISNUMBER(SEARCH("John", A1:A10)))
+                        </div>
+                        <p><strong>Result:</strong> Returns rows where column A contains "John"</p>
+                        <p><strong>Explanation:</strong> SEARCH finds "John", ISNUMBER converts to boolean for FILTER</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 5: Dynamic FILTER with Cell References</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =FILTER(A1:C10, B1:B10=E1, "No matches found")
+                        </div>
+                        <p><strong>Result:</strong> Filters based on value in E1, shows custom message if no matches</p>
+                        <p><strong>Explanation:</strong> Makes the filter dynamic based on user input in E1</p>
+                    </div>
+                    
+                    <div class="highlight">
+                        <h4>🎯 FILTER Best Practices</h4>
+                        <ul>
+                            <li>Always include if_empty parameter for better user experience</li>
+                            <li>Use parentheses to group complex conditions</li>
+                            <li>Remember: * = AND, + = OR</li>
+                            <li>FILTER creates dynamic arrays - ensure sufficient space below</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="stacking" class="section">
+                    <h2>📚 VSTACK & HSTACK Functions</h2>
+                    <div class="complexity-indicator intermediate">Intermediate</div>
+                    
+                    <p>VSTACK and HSTACK are dynamic array functions that combine arrays vertically and horizontally respectively. They're essential for data consolidation and array manipulation.</p>
+                    
+                    <h3 id="vstack">VSTACK (Vertical Stack)</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        VSTACK(array1, [array2], ...)
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Basic VSTACK</h4>
+                        <p>Combine two data ranges vertically:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =VSTACK(A1:C3, A5:C7)
+                        </div>
+                        <p><strong>Result:</strong> Creates a single array with data from both ranges stacked vertically</p>
+                        <p><strong>Explanation:</strong> Perfect for combining data from multiple sources</p>
+                    </div>
+                    
+                    <h3 id="hstack">HSTACK (Horizontal Stack)</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        HSTACK(array1, [array2], ...)
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: Basic HSTACK</h4>
+                        <p>Combine two data ranges horizontally:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =HSTACK(A1:A10, C1:C10)
+                        </div>
+                        <p><strong>Result:</strong> Creates a single array with data from both columns side by side</p>
+                        <p><strong>Explanation:</strong> Useful for combining related data from different columns</p>
+                    </div>
+                    
+                    <h3 id="stacking-examples">Advanced Stacking Examples</h3>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <div class="example">
+                        <h4>Example 3: VSTACK with Headers</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =VSTACK({"Name","Department","Salary"}, A2:C10)
+                        </div>
+                        <p><strong>Result:</strong> Adds headers to existing data</p>
+                        <p><strong>Explanation:</strong> The array constant creates headers, VSTACK adds them to data</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 4: Combining Multiple Sources</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =VSTACK(Q1_Data, Q2_Data, Q3_Data, Q4_Data)
+                        </div>
+                        <p><strong>Result:</strong> Creates annual report by combining quarterly data</p>
+                        <p><strong>Explanation:</strong> VSTACK can combine multiple named ranges or arrays</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 5: Complex Data Restructuring</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =HSTACK(A1:A10, VSTACK(B1:B5, D1:D5))
+                        </div>
+                        <p><strong>Result:</strong> Combines column A with a vertical stack of B1:B5 and D1:D5</p>
+                        <p><strong>Explanation:</strong> Shows how stacking functions can be nested</p>
+                    </div>
+                    
+                    <div class="warning">
+                        <h4>⚠️ Dimension Compatibility</h4>
+                        <p>VSTACK requires all arrays to have the same number of columns. HSTACK requires all arrays to have the same number of rows.</p>
+                    </div>
+                </section>
+
+                <section id="let" class="section">
+                    <h2>🚀 LET Function</h2>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <p>The LET function is Excel's most powerful function for creating readable, maintainable, and efficient formulas. It allows you to define variables and use them throughout your formula, eliminating repetition and improving performance.</p>
+                    
+                    <h3 id="let-basics">Basic Syntax</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        LET(name1, value1, [name2, value2], ..., calculation)
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>name1, name2, ...</td>
+                                    <td>Variable names (must be valid Excel names)</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>value1, value2, ...</td>
+                                    <td>Values to assign to variables</td>
+                                    <td>Yes</td>
+                                </tr>
+                                <tr>
+                                    <td>calculation</td>
+                                    <td>The final calculation using the variables</td>
+                                    <td>Yes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Simple LET Usage</h4>
+                        <p>Instead of repeating calculations:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(sales, A1:A10, 
+                                 avg_sales, AVERAGE(sales),
+                                 sales > avg_sales)
+                        </div>
+                        <p><strong>Result:</strong> Boolean array showing which sales are above average</p>
+                        <p><strong>Explanation:</strong> Variables 'sales' and 'avg_sales' eliminate repetition and improve readability</p>
+                    </div>
+                    
+                    <h3 id="let-variables">Variable Management</h3>
+                    
+                    <div class="tip">
+                        <h4>💡 Variable Naming Best Practices</h4>
+                        <ul>
+                            <li>Use descriptive names: <code>sales_data</code> instead of <code>x</code></li>
+                            <li>Use underscores for multi-word names: <code>total_revenue</code></li>
+                            <li>Avoid Excel function names: don't use <code>sum</code> or <code>count</code></li>
+                            <li>Use consistent naming conventions</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: Multiple Variables</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(data, A1:C100,
+                                 names, INDEX(data, 0, 1),
+                                 departments, INDEX(data, 0, 2),
+                                 salaries, INDEX(data, 0, 3),
+                                 it_employees, departments = "IT",
+                                 it_salaries, FILTER(salaries, it_employees),
+                                 AVERAGE(it_salaries))
+                        </div>
+                        <p><strong>Result:</strong> Average salary of IT employees</p>
+                        <p><strong>Explanation:</strong> Multiple variables make complex calculations readable and maintainable</p>
+                    </div>
+                    
+                    <h3 id="let-advanced">Advanced LET Patterns</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <div class="example">
+                        <h4>Example 3: LET with Dynamic Arrays</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(source_data, A1:D100,
+                                 filtered_data, FILTER(source_data, INDEX(source_data, 0, 4) > 1000),
+                                 sorted_data, SORT(filtered_data, 4, -1),
+                                 top_10, INDEX(sorted_data, SEQUENCE(10), 0),
+                                 top_10)
+                        </div>
+                        <p><strong>Result:</strong> Top 10 records based on column 4 values</p>
+                        <p><strong>Explanation:</strong> Chain of operations: Filter → Sort → Take Top 10</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 4: LET with Conditional Logic</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(score, B2,
+                                 grade, IF(score >= 90, "A",
+                                          IF(score >= 80, "B",
+                                            IF(score >= 70, "C",
+                                              IF(score >= 60, "D", "F")))),
+                                 bonus, IF(grade = "A", score * 0.1, 0),
+                                 final_score, score + bonus,
+                                 grade & " (" & final_score & ")")
+                        </div>
+                        <p><strong>Result:</strong> Grade with bonus calculation, e.g., "A (99)"</p>
+                        <p><strong>Explanation:</strong> Complex grading system with bonus calculation</p>
+                    </div>
+                    
+                    <h3 id="let-examples">Complex LET Examples</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <div class="example">
+                        <h4>Example 5: Sales Analysis Dashboard</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(raw_data, SalesData,
+                                 current_month, MONTH(TODAY()),
+                                 current_year, YEAR(TODAY()),
+                                 
+                                 dates, INDEX(raw_data, 0, 1),
+                                 amounts, INDEX(raw_data, 0, 2),
+                                 salesperson, INDEX(raw_data, 0, 3),
+                                 regions, INDEX(raw_data, 0, 4),
+                                 
+                                 current_month_filter, (MONTH(dates) = current_month) * 
+                                                      (YEAR(dates) = current_year),
+                                 
+                                 current_month_data, FILTER(raw_data, current_month_filter),
+                                 
+                                 total_sales, SUM(INDEX(current_month_data, 0, 2)),
+                                 avg_sale, AVERAGE(INDEX(current_month_data, 0, 2)),
+                                 transaction_count, ROWS(current_month_data),
+                                 
+                                 VSTACK(
+                                   {"Metric", "Value"},
+                                   {"Total Sales", total_sales},
+                                   {"Average Sale", avg_sale},
+                                   {"Transactions", transaction_count}
+                                 ))
+                        </div>
+                        <p><strong>Result:</strong> Complete sales dashboard for current month</p>
+                        <p><strong>Explanation:</strong> Demonstrates LET's power for complex business calculations</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 6: Data Validation and Cleaning</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(input_data, A1:A100,
+                                 cleaned_data, TRIM(UPPER(input_data)),
+                                 
+                                 valid_emails, ISNUMBER(SEARCH("@", cleaned_data)) * 
+                                              ISNUMBER(SEARCH(".", cleaned_data)),
+                                 
+                                 email_data, FILTER(cleaned_data, valid_emails),
+                                 
+                                 unique_emails, UNIQUE(email_data),
+                                 
+                                 duplicate_count, ROWS(email_data) - ROWS(unique_emails),
+                                 
+                                 VSTACK(
+                                   {"Total Emails", ROWS(email_data)},
+                                   {"Unique Emails", ROWS(unique_emails)},
+                                   {"Duplicates", duplicate_count}
+                                 ))
+                        </div>
+                        <p><strong>Result:</strong> Email validation and duplicate analysis</p>
+                        <p><strong>Explanation:</strong> Shows LET's capability for data quality operations</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 7: Financial Modeling</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(principal, 100000,
+                                 annual_rate, 0.05,
+                                 years, 30,
+                                 periods_per_year, 12,
+                                 
+                                 total_periods, years * periods_per_year,
+                                 period_rate, annual_rate / periods_per_year,
+                                 
+                                 monthly_payment, PMT(period_rate, total_periods, -principal),
+                                 
+                                 period_sequence, SEQUENCE(total_periods),
+                                 
+                                 remaining_balance, principal * 
+                                   ((1 + period_rate) ^ total_periods - 
+                                    (1 + period_rate) ^ period_sequence) / 
+                                   ((1 + period_rate) ^ total_periods - 1),
+                                 
+                                 interest_payment, remaining_balance * period_rate,
+                                 principal_payment, monthly_payment - interest_payment,
+                                 
+                                 HSTACK(
+                                   period_sequence,
+                                   monthly_payment,
+                                   interest_payment,
+                                   principal_payment,
+                                   remaining_balance
+                                 ))
+                        </div>
+                        <p><strong>Result:</strong> Complete amortization schedule</p>
+                        <p><strong>Explanation:</strong> LET enables complex financial calculations in a single formula</p>
+                    </div>
+                    
+                    <div class="highlight">
+                        <h4>🎯 LET Function Benefits</h4>
+                        <ul>
+                            <li><strong>Performance:</strong> Calculations are performed once and reused</li>
+                            <li><strong>Readability:</strong> Complex formulas become self-documenting</li>
+                            <li><strong>Maintainability:</strong> Changes need to be made in one place</li>
+                            <li><strong>Debugging:</strong> Each variable can be tested independently</li>
+                            <li><strong>Flexibility:</strong> Variables can be easily modified or extended</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 LET Development Strategy</h4>
+                        <ol>
+                            <li>Start with the final calculation you want</li>
+                            <li>Identify repeated expressions</li>
+                            <li>Create variables for complex sub-calculations</li>
+                            <li>Test each variable independently</li>
+                            <li>Build up the final formula step by step</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section id="lambda" class="section">
+                    <h2>⚡ LAMBDA Function</h2>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <p>The LAMBDA function is Excel's most revolutionary feature, allowing you to create custom, reusable functions without VBA. It enables functional programming within Excel, making complex calculations more modular and maintainable.</p>
+                    
+                    <h3 id="lambda-basics">Basic Syntax</h3>
+                    <div class="formula">
+                        <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                        LAMBDA([parameter1], [parameter2], ..., calculation)
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                    <th>Required</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>parameter1, parameter2, ...</td>
+                                    <td>Input parameters for the function (up to 253)</td>
+                                    <td>No</td>
+                                </tr>
+                                <tr>
+                                    <td>calculation</td>
+                                    <td>The calculation or expression using the parameters</td>
+                                    <td>Yes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 1: Simple LAMBDA Function</h4>
+                        <p>Create a function to calculate the area of a circle:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LAMBDA(radius, PI() * radius^2)(5)
+                        </div>
+                        <p><strong>Result:</strong> 78.54 (area of circle with radius 5)</p>
+                        <p><strong>Explanation:</strong> LAMBDA creates a function that takes radius as input, then immediately calls it with radius=5</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: LAMBDA with Multiple Parameters</h4>
+                        <p>Create a function to calculate compound interest:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LAMBDA(principal, rate, years, principal * (1 + rate)^years)(1000, 0.05, 10)
+                        </div>
+                        <p><strong>Result:</strong> 1628.89 (compound interest calculation)</p>
+                        <p><strong>Explanation:</strong> LAMBDA creates a compound interest function and calls it with P=1000, r=0.05, t=10</p>
+                    </div>
+                    
+                    <h3 id="lambda-parameters">Parameter Management</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <div class="example">
+                        <h4>Example 3: Named LAMBDA Function</h4>
+                        <p>Create a named function using Name Manager:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LAMBDA(x, y, SQRT(x^2 + y^2))
+                        </div>
+                        <p><strong>Usage:</strong> After naming this "DISTANCE", use =DISTANCE(3,4) to get 5</p>
+                        <p><strong>Explanation:</strong> Creates a reusable function to calculate distance between two points</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 4: LAMBDA with Array Operations</h4>
+                        <p>Create a function to normalize data:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LAMBDA(data, (data - MIN(data)) / (MAX(data) - MIN(data)))(A1:A10)
+                        </div>
+                        <p><strong>Result:</strong> Array of normalized values between 0 and 1</p>
+                        <p><strong>Explanation:</strong> LAMBDA creates a normalization function and applies it to range A1:A10</p>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 LAMBDA Naming Best Practices</h4>
+                        <ul>
+                            <li>Use descriptive parameter names: <code>price</code> instead of <code>p</code></li>
+                            <li>Follow consistent naming conventions</li>
+                            <li>Create named functions for frequently used calculations</li>
+                            <li>Document complex LAMBDA functions with comments</li>
+                        </ul>
+                    </div>
+                    
+                    <h3 id="lambda-advanced">Advanced LAMBDA Usage</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <div class="example">
+                        <h4>Example 5: Recursive LAMBDA Function</h4>
+                        <p>Create a factorial function using recursion:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LAMBDA(n, IF(n <= 1, 1, n * FACTORIAL(n-1)))(5)
+                        </div>
+                        <p><strong>Result:</strong> 120 (5! = 5×4×3×2×1)</p>
+                        <p><strong>Explanation:</strong> Shows how LAMBDA can call existing functions to create recursive behavior</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 6: LAMBDA with MAP Function</h4>
+                        <p>Apply a custom function to each element in an array:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =MAP(A1:A10, LAMBDA(x, IF(x > 0, "Positive", IF(x < 0, "Negative", "Zero"))))
+                        </div>
+                        <p><strong>Result:</strong> Array of text values categorizing numbers</p>
+                        <p><strong>Explanation:</strong> MAP applies the LAMBDA function to each value in A1:A10</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 7: LAMBDA with REDUCE Function</h4>
+                        <p>Create a custom aggregation function:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =REDUCE(0, A1:A10, LAMBDA(acc, val, IF(val > 100, acc + val, acc)))
+                        </div>
+                        <p><strong>Result:</strong> Sum of values greater than 100</p>
+                        <p><strong>Explanation:</strong> REDUCE uses LAMBDA to conditionally sum values</p>
+                    </div>
+                    
+                    <h3 id="lambda-examples">Complex LAMBDA Examples</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <div class="example">
+                        <h4>Example 8: Advanced Statistical Function</h4>
+                        <p>Create a function to calculate z-scores:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(
+                               ZSCORE, LAMBDA(data, (data - AVERAGE(data)) / STDEV.S(data)),
+                               ZSCORE(A1:A20)
+                             )
+                        </div>
+                        <p><strong>Result:</strong> Array of z-scores for the input data</p>
+                        <p><strong>Explanation:</strong> Combines LET and LAMBDA to create and use a statistical function</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 9: Business Logic Function</h4>
+                        <p>Create a complex commission calculation function:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(
+                               COMMISSION, LAMBDA(sales, years_service, 
+                                 LET(
+                                   base_rate, 0.05,
+                                   experience_bonus, years_service * 0.001,
+                                   performance_multiplier, IF(sales > 100000, 1.5, 
+                                                             IF(sales > 50000, 1.2, 1)),
+                                   total_rate, (base_rate + experience_bonus) * performance_multiplier,
+                                   sales * total_rate
+                                 )
+                               ),
+                               MAP(A1:A10, B1:B10, COMMISSION)
+                             )
+                        </div>
+                        <p><strong>Result:</strong> Commission calculations for each salesperson</p>
+                        <p><strong>Explanation:</strong> Complex business logic encapsulated in a reusable LAMBDA function</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 10: Data Transformation Pipeline</h4>
+                        <p>Create a data processing pipeline:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(
+                               CLEAN_TEXT, LAMBDA(text, TRIM(UPPER(text))),
+                               VALIDATE_EMAIL, LAMBDA(email, 
+                                 ISNUMBER(SEARCH("@", email)) * ISNUMBER(SEARCH(".", email))),
+                               PROCESS_DATA, LAMBDA(names, emails,
+                                 LET(
+                                   clean_names, MAP(names, CLEAN_TEXT),
+                                   valid_emails, MAP(emails, VALIDATE_EMAIL),
+                                   HSTACK(clean_names, emails, valid_emails)
+                                 )
+                               ),
+                               PROCESS_DATA(A1:A100, B1:B100)
+                             )
+                        </div>
+                        <p><strong>Result:</strong> Processed data with cleaned names and email validation</p>
+                        <p><strong>Explanation:</strong> Multiple LAMBDA functions working together in a data processing pipeline</p>
+                    </div>
+                    
+                    <div class="highlight">
+                        <h4>🎯 LAMBDA Function Benefits</h4>
+                        <ul>
+                            <li><strong>Reusability:</strong> Create once, use everywhere</li>
+                            <li><strong>Modularity:</strong> Break complex logic into smaller functions</li>
+                            <li><strong>Readability:</strong> Self-documenting code with descriptive function names</li>
+                            <li><strong>Maintainability:</strong> Update logic in one place</li>
+                            <li><strong>Flexibility:</strong> Create domain-specific functions for your business</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="warning">
+                        <h4>⚠️ LAMBDA Limitations</h4>
+                        <ul>
+                            <li>Cannot modify cell values or perform actions outside the calculation</li>
+                            <li>Limited to 253 parameters</li>
+                            <li>Recursive functions have depth limitations</li>
+                            <li>Cannot access external data sources directly</li>
+                            <li>May impact performance with very large datasets</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 LAMBDA Development Strategy</h4>
+                        <ol>
+                            <li>Start with simple, single-purpose functions</li>
+                            <li>Test functions thoroughly with various inputs</li>
+                            <li>Use Name Manager to create reusable functions</li>
+                            <li>Combine with LET for complex internal logic</li>
+                            <li>Document your functions with clear parameter descriptions</li>
+                            <li>Consider performance implications for large datasets</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section id="combinations" class="section">
+                    <h2>🔗 Function Combinations</h2>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <p>This section demonstrates how to combine multiple functions to solve complex business problems. We'll progress from simple combinations to expert-level formulas.</p>
+                    
+                    <h3 id="combo-simple">Simple Combinations</h3>
+                    <div class="complexity-indicator beginner">Beginner</div>
+                    
+                    <div class="example">
+                        <h4>Example 1: INDEX + MATCH (Basic Lookup)</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(C:C, MATCH(E1, A:A, 0))
+                        </div>
+                        <p><strong>Purpose:</strong> Two-way lookup alternative to VLOOKUP</p>
+                        <p><strong>Explanation:</strong> MATCH finds position of E1 in column A, INDEX returns corresponding value from column C</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: FILTER + VSTACK (Combining Results)</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =VSTACK(
+                               {"Employee", "Department", "Salary"},
+                               FILTER(A2:C100, B2:B100="IT")
+                             )
+                        </div>
+                        <p><strong>Purpose:</strong> Filtered report with headers</p>
+                        <p><strong>Explanation:</strong> FILTER gets IT employees, VSTACK adds headers</p>
+                    </div>
+                    
+                    <h3 id="combo-intermediate">Intermediate Combinations</h3>
+                    <div class="complexity-indicator intermediate">Intermediate</div>
+                    
+                    <div class="example">
+                        <h4>Example 3: Multiple Criteria Lookup</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =INDEX(D:D, MATCH(1, (A:A=F1)*(B:B=F2), 0))
+                        </div>
+                        <p><strong>Purpose:</strong> Lookup based on two criteria</p>
+                        <p><strong>Explanation:</strong> MATCH uses array formula to find row where both A=F1 AND B=F2</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 4: Dynamic Ranking with FILTER</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(data, A1:C100,
+                                 dept_filter, INDEX(data, 0, 2) = "Sales",
+                                 filtered_data, FILTER(data, dept_filter),
+                                 sorted_data, SORT(filtered_data, 3, -1),
+                                 HSTACK(SEQUENCE(ROWS(sorted_data)), sorted_data))
+                        </div>
+                        <p><strong>Purpose:</strong> Ranked list of sales employees by performance</p>
+                        <p><strong>Explanation:</strong> Filter → Sort → Add rank numbers</p>
+                    </div>
+                    
+                    <h3 id="combo-advanced">Advanced Combinations</h3>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <div class="example">
+                        <h4>Example 5: Cross-Tab Analysis</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(source_data, A1:C1000,
+                                 categories, UNIQUE(INDEX(source_data, 0, 1)),
+                                 months, UNIQUE(INDEX(source_data, 0, 2)),
+                                 
+                                 create_crosstab, LAMBDA(cat, 
+                                   HSTACK(cat, 
+                                     MAP(months, LAMBDA(m,
+                                       SUMIFS(INDEX(source_data, 0, 3),
+                                              INDEX(source_data, 0, 1), cat,
+                                              INDEX(source_data, 0, 2), m))))),
+                                 
+                                 VSTACK(
+                                   HSTACK("Category", months),
+                                   MAP(categories, create_crosstab)
+                                 ))
+                        </div>
+                        <p><strong>Purpose:</strong> Dynamic pivot table-like analysis</p>
+                        <p><strong>Explanation:</strong> Creates cross-tabulation using LAMBDA and MAP functions</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 6: Data Quality Dashboard</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(raw_data, A1:E1000,
+                                 
+                                 total_records, ROWS(raw_data) - 1,
+                                 
+                                 blank_cells, SUMPRODUCT(--(INDEX(raw_data, 0, 1:5) = "")),
+                                 
+                                 duplicate_names, total_records - 
+                                   ROWS(UNIQUE(INDEX(raw_data, 0, 1))),
+                                 
+                                 invalid_emails, SUMPRODUCT(
+                                   --(NOT(ISNUMBER(SEARCH("@", INDEX(raw_data, 0, 3))))),
+                                   --(INDEX(raw_data, 0, 3) <> "")),
+                                 
+                                 completeness_pct, (1 - blank_cells / (total_records * 5)) * 100,
+                                 
+                                 VSTACK(
+                                   {"Data Quality Metrics", "Value"},
+                                   {"Total Records", total_records},
+                                   {"Blank Cells", blank_cells},
+                                   {"Duplicate Names", duplicate_names},
+                                   {"Invalid Emails", invalid_emails},
+                                   {"Completeness %", completeness_pct}
+                                 ))
+                        </div>
+                        <p><strong>Result:</strong> Comprehensive data quality assessment</p>
+                        <p><strong>Explanation:</strong> Multi-metric analysis of data quality issues</p>
+                    </div>
+                    
+                    <h3 id="combo-choose-filter">CHOOSE + FILTER Integration</h3>
+                    <div class="complexity-indicator advanced">Advanced</div>
+                    
+                    <p>Combining CHOOSE with FILTER creates incredibly flexible and dynamic filtering systems. This integration allows users to select different filtering criteria through simple dropdown menus or numerical inputs.</p>
+                    
+                    <div class="example">
+                        <h4>Example 1: Dynamic Department Filter</h4>
+                        <p>Employee data with user-selectable department filtering:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(data, A1:D100,
+                                 filter_choice, E1,
+                                 dept_criteria, CHOOSE(filter_choice, "IT", "HR", "Finance", "Sales", "Marketing"),
+                                 FILTER(data, INDEX(data, 0, 2) = dept_criteria, "No employees found"))
+                        </div>
+                        <p><strong>Result:</strong> Returns employees from selected department (1=IT, 2=HR, 3=Finance, 4=Sales, 5=Marketing)</p>
+                        <p><strong>Explanation:</strong> User enters 1-5 in E1, CHOOSE selects corresponding department, FILTER returns matching employees</p>
+                        <p><strong>Use Case:</strong> HR dashboard where users can quickly switch between departments</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: Multi-Criteria Sales Analysis</h4>
+                        <p>Sales data with multiple filtering options:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(sales_data, A1:E1000,
+                                 filter_type, F1,
+                                 threshold_value, G1,
+                                 
+                                 criteria_column, CHOOSE(filter_type, 
+                                   INDEX(sales_data, 0, 3),  // Sales Amount
+                                   INDEX(sales_data, 0, 4),  // Profit
+                                   INDEX(sales_data, 0, 5)   // Quantity
+                                 ),
+                                 
+                                 filter_condition, criteria_column > threshold_value,
+                                 
+                                 FILTER(sales_data, filter_condition, "No records meet criteria"))
+                        </div>
+                        <p><strong>Result:</strong> Filters sales data based on selected criteria and threshold</p>
+                        <p><strong>Explanation:</strong> F1 selects column (1=Sales, 2=Profit, 3=Quantity), G1 sets threshold, returns records above threshold</p>
+                        <p><strong>Use Case:</strong> Sales dashboard for analyzing high-performing transactions across different metrics</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 3: Date Range Filtering with CHOOSE</h4>
+                        <p>Dynamic date range filtering for reports:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(transaction_data, A1:D5000,
+                                 date_range_option, H1,
+                                 today_date, TODAY(),
+                                 
+                                 start_date, CHOOSE(date_range_option,
+                                   today_date - 7,          // Last 7 days
+                                   today_date - 30,         // Last 30 days
+                                   today_date - 90,         // Last 90 days
+                                   DATE(YEAR(today_date), 1, 1),  // Year to date
+                                   DATE(YEAR(today_date), MONTH(today_date), 1)  // Month to date
+                                 ),
+                                 
+                                 date_filter, INDEX(transaction_data, 0, 1) >= start_date,
+                                 
+                                 FILTER(transaction_data, date_filter, "No transactions in selected period"))
+                        </div>
+                        <p><strong>Result:</strong> Returns transactions within selected time period</p>
+                        <p><strong>Explanation:</strong> H1 selects period (1=7 days, 2=30 days, 3=90 days, 4=YTD, 5=MTD), filters accordingly</p>
+                        <p><strong>Use Case:</strong> Financial reporting where users need different time period views</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 4: Advanced Multi-Dimensional Filtering</h4>
+                        <p>Complex filtering with multiple CHOOSE-based criteria:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(product_data, A1:F2000,
+                                 category_filter, I1,
+                                 performance_filter, J1,
+                                 region_filter, K1,
+                                 
+                                 category_criteria, CHOOSE(category_filter, 
+                                   "Electronics", "Clothing", "Home", "Sports", "Books"),
+                                 
+                                 performance_threshold, CHOOSE(performance_filter,
+                                   1000,    // Low performers
+                                   5000,    // Medium performers  
+                                   10000,   // High performers
+                                   25000    // Top performers
+                                 ),
+                                 
+                                 region_criteria, CHOOSE(region_filter,
+                                   "North", "South", "East", "West", "Central"),
+                                 
+                                 multi_filter, (INDEX(product_data, 0, 2) = category_criteria) * 
+                                              (INDEX(product_data, 0, 4) >= performance_threshold) * 
+                                              (INDEX(product_data, 0, 5) = region_criteria),
+                                 
+                                 filtered_results, FILTER(product_data, multi_filter, "No products match all criteria"),
+                                 
+                                 VSTACK(
+                                   {"Product Analysis Results", "", "", "", "", ""},
+                                   {"Category: " & category_criteria, "Performance: >" & performance_threshold, "Region: " & region_criteria, "", "", ""},
+                                   {"", "", "", "", "", ""},
+                                   filtered_results
+                                 ))
+                        </div>
+                        <p><strong>Result:</strong> Comprehensive product analysis with multiple selectable criteria</p>
+                        <p><strong>Explanation:</strong> Three CHOOSE functions create independent filter criteria, combined with AND logic for precise filtering</p>
+                        <p><strong>Use Case:</strong> Product management dashboard for detailed market analysis</p>
+                    </div>
+                    
+                    <div class="highlight">
+                        <h4>🎯 CHOOSE + FILTER Best Practices</h4>
+                        <ul>
+                            <li><strong>User Experience:</strong> Create data validation dropdowns corresponding to CHOOSE options</li>
+                            <li><strong>Error Handling:</strong> Always include if_empty parameter in FILTER for better user feedback</li>
+                            <li><strong>Performance:</strong> Use LET to avoid recalculating CHOOSE expressions</li>
+                            <li><strong>Documentation:</strong> Add headers or labels to show current filter settings</li>
+                            <li><strong>Flexibility:</strong> Design CHOOSE options to cover most common use cases</li>
+                        </ul>
+                    </div>
+                    
+                    <h3 id="combo-lambda">LAMBDA Combinations</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <p>LAMBDA functions become incredibly powerful when combined with other Excel functions, creating sophisticated data processing and analysis solutions.</p>
+                    
+                    <div class="example">
+                        <h4>Example 1: LAMBDA + MAP for Data Transformation</h4>
+                        <p>Transform sales data with complex business logic:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(
+                               CALCULATE_BONUS, LAMBDA(sales, target, years,
+                                 LET(
+                                   base_bonus, IF(sales >= target, (sales - target) * 0.1, 0),
+                                   experience_multiplier, 1 + (years * 0.05),
+                                   total_bonus, base_bonus * experience_multiplier,
+                                   total_bonus
+                                 )
+                               ),
+                               MAP(A1:A10, B1:B10, C1:C10, CALCULATE_BONUS)
+                             )
+                        </div>
+                        <p><strong>Result:</strong> Bonus calculations for each employee based on sales, targets, and experience</p>
+                        <p><strong>Explanation:</strong> LAMBDA defines complex bonus logic, MAP applies it to each row of data</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 2: LAMBDA + FILTER for Advanced Filtering</h4>
+                        <p>Create sophisticated filtering with custom logic:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(
+                               IS_HIGH_PERFORMER, LAMBDA(sales, satisfaction, tenure,
+                                 (sales > 50000) * (satisfaction >= 4.5) * (tenure >= 2)
+                               ),
+                               employee_data, A1:E100,
+                               high_performer_filter, MAP(
+                                 INDEX(employee_data, 0, 3),
+                                 INDEX(employee_data, 0, 4),
+                                 INDEX(employee_data, 0, 5),
+                                 IS_HIGH_PERFORMER
+                               ),
+                               FILTER(employee_data, high_performer_filter, "No high performers found")
+                             )
+                        </div>
+                        <p><strong>Result:</strong> Employees meeting complex performance criteria</p>
+                        <p><strong>Explanation:</strong> LAMBDA defines multi-criteria performance evaluation, applied via MAP and used in FILTER</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 3: LAMBDA + REDUCE for Complex Aggregations</h4>
+                        <p>Custom aggregation with conditional logic:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(
+                               sales_data, A1:C100,
+                               WEIGHTED_AVERAGE, LAMBDA(values, weights,
+                                 REDUCE(
+                                   {0, 0},
+                                   HSTACK(values, weights),
+                                   LAMBDA(acc, row,
+                                     {
+                                       INDEX(acc, 1) + INDEX(row, 1) * INDEX(row, 2),
+                                       INDEX(acc, 2) + INDEX(row, 2)
+                                     }
+                                   )
+                                 )
+                               ),
+                               result, WEIGHTED_AVERAGE(INDEX(sales_data, 0, 2), INDEX(sales_data, 0, 3)),
+                               INDEX(result, 1) / INDEX(result, 2)
+                             )
+                        </div>
+                        <p><strong>Result:</strong> Weighted average of sales values</p>
+                        <p><strong>Explanation:</strong> LAMBDA creates weighted average function, REDUCE performs the accumulation</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 4: LAMBDA + LET for Complex Business Logic</h4>
+                        <p>Sophisticated pricing model with multiple factors:</p>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(
+                               DYNAMIC_PRICING, LAMBDA(base_price, demand_factor, inventory_level, competitor_price,
+                                 LET(
+                                   demand_adjustment, (demand_factor - 1) * 0.2,
+                                   inventory_adjustment, IF(inventory_level < 10, 0.15, 
+                                                          IF(inventory_level > 100, -0.1, 0)),
+                                   competitive_adjustment, IF(competitor_price > 0, 
+                                     MIN(MAX((competitor_price - base_price) / base_price * 0.5, -0.2), 0.2), 0),
+                                   
+                                   total_adjustment, demand_adjustment + inventory_adjustment + competitive_adjustment,
+                                   final_price, base_price * (1 + total_adjustment),
+                                   
+                                   MAX(final_price, base_price * 0.7)
+                                 )
+                               ),
+                               
+                               MAP(A1:A10, B1:B10, C1:C10, D1:D10, DYNAMIC_PRICING)
+                             )
+                        </div>
+                        <p><strong>Result:</strong> Dynamic pricing based on multiple business factors</p>
+                        <p><strong>Explanation:</strong> Complex pricing algorithm encapsulated in LAMBDA, applied to product data</p>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 LAMBDA Combination Tips</h4>
+                        <ol>
+                            <li>Use LAMBDA with MAP for row-by-row transformations</li>
+                            <li>Combine LAMBDA with FILTER for complex filtering logic</li>
+                            <li>Use LAMBDA with REDUCE for custom aggregations</li>
+                            <li>Nest LET inside LAMBDA for complex internal logic</li>
+                            <li>Create libraries of named LAMBDA functions for reuse</li>
+                        </ol>
+                    </div>
+                    
+                    <h3 id="combo-expert">Expert Level Combinations</h3>
+                    <div class="complexity-indicator expert">Expert</div>
+                    
+                    <div class="example">
+                        <h4>Example 7: Advanced Sales Analytics</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(sales_data, SalesTable,
+                                 
+                                 dates, INDEX(sales_data, 0, 1),
+                                 amounts, INDEX(sales_data, 0, 2),
+                                 salesperson, INDEX(sales_data, 0, 3),
+                                 regions, INDEX(sales_data, 0, 4),
+                                 
+                                 current_year, YEAR(TODAY()),
+                                 current_month, MONTH(TODAY()),
+                                 
+                                 ytd_filter, YEAR(dates) = current_year,
+                                 mtd_filter, ytd_filter * (MONTH(dates) = current_month),
+                                 
+                                 ytd_sales, SUMPRODUCT(amounts, ytd_filter),
+                                 mtd_sales, SUMPRODUCT(amounts, mtd_filter),
+                                 
+                                 top_performers, LET(
+                                   sp_unique, UNIQUE(salesperson),
+                                   sp_totals, MAP(sp_unique, LAMBDA(sp,
+                                     SUMPRODUCT(amounts, (salesperson = sp) * ytd_filter))),
+                                   sp_ranked, SORT(HSTACK(sp_unique, sp_totals), 2, -1),
+                                   INDEX(sp_ranked, SEQUENCE(5), 0)
+                                 ),
+                                 
+                                 regional_analysis, LET(
+                                   regions_unique, UNIQUE(regions),
+                                   regional_totals, MAP(regions_unique, LAMBDA(r,
+                                     SUMPRODUCT(amounts, (regions = r) * ytd_filter))),
+                                   regional_growth, MAP(regions_unique, LAMBDA(r,
+                                     (SUMPRODUCT(amounts, (regions = r) * ytd_filter) /
+                                      SUMPRODUCT(amounts, (regions = r) * 
+                                        (YEAR(dates) = current_year - 1)) - 1) * 100)),
+                                   SORT(HSTACK(regions_unique, regional_totals, regional_growth), 2, -1)
+                                 ),
+                                 
+                                 VSTACK(
+                                   {"=== SALES DASHBOARD ===", "", ""},
+                                   {"YTD Sales", ytd_sales, ""},
+                                   {"MTD Sales", mtd_sales, ""},
+                                   {"", "", ""},
+                                   {"=== TOP PERFORMERS ===", "", ""},
+                                   {"Salesperson", "YTD Sales", ""},
+                                   top_performers,
+                                   {"", "", ""},
+                                   {"=== REGIONAL ANALYSIS ===", "", ""},
+                                   {"Region", "YTD Sales", "Growth %"},
+                                   regional_analysis
+                                 ))
+                        </div>
+                        <p><strong>Purpose:</strong> Complete executive sales dashboard</p>
+                        <p><strong>Explanation:</strong> Multi-dimensional analysis with rankings, comparisons, and growth metrics</p>
+                    </div>
+                    
+                    <div class="example">
+                        <h4>Example 8: Automated Report Generation</h4>
+                        <div class="formula">
+                            <button class="copy-btn" onclick="copyToClipboard(this)">Copy</button>
+                            =LET(employee_data, EmployeeTable,
+                                 performance_data, PerformanceTable,
+                                 
+                                 emp_ids, INDEX(employee_data, 0, 1),
+                                 emp_names, INDEX(employee_data, 0, 2),
+                                 departments, INDEX(employee_data, 0, 3),
+                                 
+                                 perf_emp_ids, INDEX(performance_data, 0, 1),
+                                 scores, INDEX(performance_data, 0, 2),
+                                 review_dates, INDEX(performance_data, 0, 3),
+                                 
+                                 current_year, YEAR(TODAY()),
+                                 current_reviews, YEAR(review_dates) = current_year,
+                                 
+                                 consolidated_data, LET(
+                                   emp_with_perf, MAP(emp_ids, LAMBDA(id,
+                                     LET(perf_match, FILTER(performance_data, 
+                                           (perf_emp_ids = id) * current_reviews),
+                                         avg_score, IF(ROWS(perf_match) > 0,
+                                           AVERAGE(INDEX(perf_match, 0, 2)), 0),
+                                         avg_score))),
+                                   
+                                   rating_category, MAP(emp_with_perf, LAMBDA(score,
+                                     IF(score >= 4.5, "Excellent",
+                                       IF(score >= 3.5, "Good",
+                                         IF(score >= 2.5, "Average",
+                                           IF(score > 0, "Needs Improvement", "No Review")))))),
+                                   
+                                   HSTACK(emp_names, departments, emp_with_perf, rating_category)
+                                 ),
+                                 
+                                 dept_summary, LET(
+                                   unique_depts, UNIQUE(departments),
+                                   dept_stats, MAP(unique_depts, LAMBDA(dept,
+                                     LET(dept_data, FILTER(consolidated_data, 
+                                           INDEX(consolidated_data, 0, 2) = dept),
+                                         avg_rating, AVERAGE(INDEX(dept_data, 0, 3)),
+                                         excellent_count, SUMPRODUCT(
+                                           --(INDEX(dept_data, 0, 4) = "Excellent")),
+                                         HSTACK(dept, ROWS(dept_data), avg_rating, excellent_count)))),
+                                   SORT(dept_stats, 3, -1)
+                                 ),
+                                 
+                                 VSTACK(
+                                   {"=== EMPLOYEE PERFORMANCE REPORT ===", "", "", ""},
+                                   {"Employee", "Department", "Avg Score", "Rating"},
+                                   SORT(consolidated_data, 3, -1),
+                                   {"", "", "", ""},
+                                   {"=== DEPARTMENT SUMMARY ===", "", "", ""},
+                                   {"Department", "Employees", "Avg Score", "Excellent Count"},
+                                   dept_summary
+                                 ))
+                        </div>
+                        <p><strong>Purpose:</strong> Automated HR performance reporting system</p>
+                        <p><strong>Explanation:</strong> Joins multiple data sources, calculates metrics, and generates formatted reports</p>
+                    </div>
+                    
+                    <div class="highlight">
+                        <h4>🎯 Expert Combination Strategies</h4>
+                        <ul>
+                            <li><strong>Modular Design:</strong> Break complex problems into smaller, manageable pieces</li>
+                            <li><strong>Variable Reuse:</strong> Use LET to avoid recalculating expensive operations</li>
+                            <li><strong>Error Handling:</strong> Include safeguards for edge cases and invalid data</li>
+                            <li><strong>Performance Optimization:</strong> Consider calculation order and data size</li>
+                            <li><strong>Documentation:</strong> Use descriptive variable names and comments</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tip">
+                        <h4>💡 Development Workflow for Complex Formulas</h4>
+                        <ol>
+                            <li><strong>Plan:</strong> Outline the desired output and required inputs</li>
+                            <li><strong>Prototype:</strong> Start with simple versions of each component</li>
+                            <li><strong>Test:</strong> Validate each piece independently</li>
+                            <li><strong>Combine:</strong> Gradually integrate components using LET</li>
+                            <li><strong>Optimize:</strong> Refine for performance and readability</li>
+                            <li><strong>Document:</strong> Add comments and create user guides</li>
+                        </ol>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+    
+    <button class="back-to-top" onclick="scrollToTop()">↑</button>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        let hasTriggeredCompletion = false;
+        
+        // Copy to clipboard functionality
+        function copyToClipboard(button) {
+            const formula = button.nextSibling.textContent;
+            navigator.clipboard.writeText(formula).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = '#28a745';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#4299e1';
+                }, 2000);
+            });
+        }
+        
+        // Subtle completion animation
+        function triggerCompletion() {
+            const progressCircle = document.getElementById('progressCircle');
+            const progressText = document.getElementById('progressText');
+            
+            // Add completion animation
+            progressCircle.classList.add('progress-complete');
+            progressText.style.color = '#ffd700';
+            progressText.style.fontWeight = 'bold';
+            
+            // Remove animation after completion
+            setTimeout(() => {
+                progressCircle.classList.remove('progress-complete');
+                progressText.style.color = '';
+                progressText.style.fontWeight = '';
+            }, 2000);
+        }
+        
+        // Scroll TOC to active item
+        function scrollTocToActive() {
+            const sidebar = document.getElementById('sidebar');
+            const activeLink = document.querySelector('.toc a.active');
+            
+            if (activeLink) {
+                const sidebarRect = sidebar.getBoundingClientRect();
+                const linkRect = activeLink.getBoundingClientRect();
+                const sidebarScrollTop = sidebar.scrollTop;
+                
+                // Calculate if the active link is outside the visible area
+                const linkRelativeTop = linkRect.top - sidebarRect.top;
+                const linkRelativeBottom = linkRect.bottom - sidebarRect.top;
+                
+                if (linkRelativeTop < 0) {
+                    // Link is above visible area
+                    sidebar.scrollTop = sidebarScrollTop + linkRelativeTop - 20;
+                } else if (linkRelativeBottom > sidebarRect.height) {
+                    // Link is below visible area
+                    sidebar.scrollTop = sidebarScrollTop + linkRelativeBottom - sidebarRect.height + 20;
+                }
+            }
+        }
+        
+        // Progress tracking
+        function updateProgress() {
+            const sections = document.querySelectorAll('.section');
+            const totalSections = sections.length;
+            
+            // Calculate scroll position
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollProgress = Math.min(scrollTop / scrollHeight, 1);
+            
+            // Update progress circle
+            const progressCircle = document.getElementById('progressCircle');
+            const progressText = document.getElementById('progressText');
+            const percentage = Math.round(scrollProgress * 100);
+            
+            // Update circle background
+            const degrees = scrollProgress * 360;
+            progressCircle.style.background = `conic-gradient(
+                #28a745 0deg,
+                #28a745 ${degrees}deg,
+                rgba(255,255,255,0.3) ${degrees}deg,
+                rgba(255,255,255,0.3) 360deg
+            )`;
+            
+            // Update text
+            progressText.textContent = `${percentage}%`;
+            
+            // Trigger completion animation when reaching 100%
+            if (percentage === 100 && !hasTriggeredCompletion) {
+                hasTriggeredCompletion = true;
+                setTimeout(triggerCompletion, 200);
+            }
+            
+            // Reset completion flag if scrolling back up
+            if (percentage < 95) {
+                hasTriggeredCompletion = false;
+            }
+            
+            // Update active TOC link
+            let activeSection = null;
+            const offset = 100;
+            
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                
+                if (rect.top <= offset) {
+                    activeSection = section;
+                }
+            });
+            
+            // Update active link
+            document.querySelectorAll('.toc a').forEach(a => a.classList.remove('active'));
+            if (activeSection) {
+                const activeLink = document.querySelector(`a[href="#${activeSection.id}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    // Scroll TOC to keep active item visible
+                    scrollTocToActive();
+                }
+            }
+        }
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('.toc a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const target = document.getElementById(targetId);
+                
+                if (target) {
+                    const targetTop = target.offsetTop - 20;
+                    window.scrollTo({
+                        top: targetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Back to top functionality
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Update progress on scroll
+        window.addEventListener('scroll', updateProgress);
+        
+        // Initialize
+        updateProgress();
+    </script>
+</body>
+</html>
